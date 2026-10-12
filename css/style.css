@@ -95,8 +95,8 @@ canvas{max-width:100%;background:#0a1620;border-radius:10px}
   box-shadow: 0 0 30px 8px rgba(220, 40, 40, 0.75) !important;
 }
 .wi {
-  width: 48px;
-  height: 48px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   border-radius: 8px;
 }
