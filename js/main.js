@@ -1,16 +1,35 @@
 const Games={};
+const FX={boom(host,x,y,big){const f=document.createElement('div');f.className='fx';f.style.left=x+'px';f.style.top=y+'px';f.innerHTML='<div class="xr"></div><div class="xf"></div>';
+const cols=['#fde047','#fb923c','#ef4444','#fff'];
+for(let i=0;i<(big?22:14);i++){const p=document.createElement('div');p.className='xp';const a=Math.random()*6.28,d=30+Math.random()*(big?70:50);
+p.style.setProperty('--dx',Math.cos(a)*d+'px');p.style.setProperty('--dy',Math.sin(a)*d+'px');p.style.background=cols[i%4];f.appendChild(p)}
+host.appendChild(f);setTimeout(()=>f.remove(),900)}};
+(()=>{const s=document.createElement('style');s.textContent=`
+#toast{display:none}
+#stk-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);background:#0d1b27;color:#fff;border:2px solid #9db8d2;border-radius:12px;padding:12px 24px;font:500 16px Montserrat,sans-serif;opacity:0;pointer-events:none;z-index:9999;white-space:nowrap}
+#stk-toast.good{color:#4ade80;border-color:#22c55e}#stk-toast.bad{color:#f87171;border-color:#ef4444}
+#stk-toast.show{animation:stkt 2.4s ease forwards}
+@keyframes stkt{0%{opacity:0;transform:translate(-50%,16px)}12%{opacity:1;transform:translate(-50%,0)}80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-6px)}}
+.stage{position:relative}.grid5{position:relative}.grid5.shake{animation:stks .45s}
+@keyframes stks{20%{transform:translate(-5px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(3px,2px)}}
+.tl{aspect-ratio:1;perspective:400px;cursor:pointer;position:relative}
+.fi{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .45s}.tl.flip .fi{transform:rotateY(180deg)}
+.ff,.fb{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;font-size:30px}
+.ff{background:#334155;transition:background .15s}.tl:not(.flip):hover .ff{background:#475569}
+.fb{transform:rotateY(180deg);background:#14532d}.fb.bomb{background:#7f1d1d}.tl.ghost{opacity:.5}
+.fx{position:absolute;pointer-events:none;width:0;height:0;z-index:6}
+.xr{position:absolute;left:-10px;top:-10px;width:20px;height:20px;border-radius:50%;border:4px solid #fb923c;animation:xr .7s ease-out forwards}
+@keyframes xr{to{transform:scale(7);opacity:0;border-width:1px}}
+.xf{position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:#fde047;animation:xf .35s ease-out forwards}
+@keyframes xf{to{transform:scale(4);opacity:0}}
+.xp{position:absolute;left:-3px;top:-3px;width:7px;height:7px;border-radius:50%;animation:xp .8s ease-out forwards}
+@keyframes xp{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}`;document.head.appendChild(s)})();
 const $=id=>document.getElementById(id);
-const LIST = [
-  ['plinko', 'PLINKO', '<img src="img/plinko.png" alt="PLINKO" class="card-img">'],
-  ['mines', 'MINES', '<img src="img/mines.png" alt="MINES" class="card-img">'],
-  ['crash', 'CRASH', '<img src="img/crash.png" alt="CRASH" class="card-img">'],
-  ['chicken', 'CHICKEN', '<img src="img/chicken.png" alt="CHICKEN" class="card-img">'],
-  ['flip', 'FLIP', '<img src="img/flip.png" alt="FLIP" class="card-img">'],
-  ['aviamasters', 'AVIAMASTERS', '<img src="img/aviamasters.png" alt="AVIAMASTERS" class="card-img">']
-];
+const LIST=[['plinko','PLINKO','<i class="badge">10000×</i><b class="big">🪙</b>'],['mines','MINES','<span class="sm">💣</span><b class="big">💎</b>'],['crash','CRASH','<b class="big">🚀</b>'],['chicken','CHICKEN','<b class="big">🐔</b>'],['flip','FLIP','<b class="big">🪙</b>'],['aviamasters','AVIAMASTERS','<b class="big">✈️</b>']];
 const App={cur:null,live:null,
 f:n=>(+n).toFixed(2),
-toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(this.tt);this.tt=setTimeout(()=>t.classList.remove('on'),2200)},
+toast(m){let t=$('stk-toast');if(!t){t=document.createElement('div');t.id='stk-toast';document.body.appendChild(t)}
+t.textContent=m;t.className='';void t.offsetWidth;t.className='show '+(/lost|boom|splat|crash|not enough|enter a/i.test(m)?'bad':/cashed|landed|\+\$|saved/i.test(m)?'good':'')},
 bal(){document.querySelectorAll('.bal').forEach(e=>e.textContent=this.f(Store.d.balance))},
 betHTML(){return '<div class="betrow"><input class="bet" type="number" min="0.01" step="0.01" value="1"><button class="mini" data-m="0.5">½</button><button class="mini" data-m="2">2×</button></div>'},
 bet(el,game,keep){if(!Store.d.user){this.route();return 0}
@@ -35,7 +54,7 @@ welcome(){this.mid('');$('app').innerHTML='<section class="welcome"><h1>Welcome 
 const go=()=>{if(this.setUser($('gu').value)){location.hash='';this.route()}else this.toast('Type a username first')};
 $('gb').onclick=go;$('gu').onkeydown=e=>{if(e.key==='Enter')go()}},
 home(){this.mid('user');$('app').innerHTML=`<h2 class="sec">🔥 Steak Originals ›</h2><div class="cards">${LIST.map(([k,n,art])=>`<a class="card c-${k}" href="#${k}">${art}<span class="nm">${n}</span></a>`).join('')}</div>
-<h2 class="sec" style="margin-top:26px">💲 Your Balance ›</h2><div class="wallet"><div class="wtop"><img src="img/wallet.png" class="wi" alt="Wallet"><div><small>Current Balance:</small><div class="big2">$<span class="bal"></span> Steakcoin</div></div><button class="pillbtn" id="rs">Click to reset back to $10</button></div><div class="stats">${Stats.html()}</div></div>`;
+<h2 class="sec" style="margin-top:26px">💲 Your Balance ›</h2><div class="wallet"><div class="wtop"><span class="wi">👛</span><div><small>Current Balance:</small><div class="big2">$<span class="bal"></span> Steakcoin</div></div><button class="pillbtn" id="rs">Click to reset back to $10</button></div><div class="stats">${Stats.html()}</div></div>`;
 $('rs').onclick=()=>{Store.reset();this.home()};this.bal()},
 init(){document.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const i=b.parentElement.querySelector('.bet');i.value=Math.max(0.01,Math.floor(i.value*b.dataset.m*100)/100)});
 addEventListener('hashchange',()=>this.route());this.route()}};
