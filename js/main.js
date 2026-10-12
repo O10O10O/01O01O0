@@ -1,6 +1,13 @@
 const Games={};
 const $=id=>document.getElementById(id);
-const LIST=[['plinko','PLINKO','<i class="badge">10000×</i><b class="big">🪙</b>'],['mines','MINES','<span class="sm">💣</span><b class="big">💎</b>'],['crash','CRASH','<b class="big">🚀</b>'],['chicken','CHICKEN','<b class="big">🐔</b>'],['flip','FLIP','<b class="big">🪙</b>'],['aviamasters','AVIAMASTERS','<b class="big">✈️</b>']];
+const LIST = [
+  ['plinko', 'PLINKO', '<img src="img/plinko.png" alt="PLINKO" class="card-img">'],
+  ['mines', 'MINES', '<img src="img/mines.png" alt="MINES" class="card-img">'],
+  ['crash', 'CRASH', '<img src="img/crash.png" alt="CRASH" class="card-img">'],
+  ['chicken', 'CHICKEN', '<img src="img/chicken.png" alt="CHICKEN" class="card-img">'],
+  ['flip', 'FLIP', '<img src="img/flip.png" alt="FLIP" class="card-img">'],
+  ['aviamasters', 'AVIAMASTERS', '<img src="img/aviamasters.png" alt="AVIAMASTERS" class="card-img">']
+];
 const App={cur:null,live:null,
 f:n=>(+n).toFixed(2),
 toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(this.tt);this.tt=setTimeout(()=>t.classList.remove('on'),2200)},
