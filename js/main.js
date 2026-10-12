@@ -35,7 +35,7 @@ welcome(){this.mid('');$('app').innerHTML='<section class="welcome"><h1>Welcome 
 const go=()=>{if(this.setUser($('gu').value)){location.hash='';this.route()}else this.toast('Type a username first')};
 $('gb').onclick=go;$('gu').onkeydown=e=>{if(e.key==='Enter')go()}},
 home(){this.mid('user');$('app').innerHTML=`<h2 class="sec">🔥 Steak Originals ›</h2><div class="cards">${LIST.map(([k,n,art])=>`<a class="card c-${k}" href="#${k}">${art}<span class="nm">${n}</span></a>`).join('')}</div>
-<h2 class="sec" style="margin-top:26px">💲 Your Balance ›</h2><div class="wallet"><div class="wtop"><span class="wi">👛</span><div><small>Current Balance:</small><div class="big2">$<span class="bal"></span> Steakcoin</div></div><button class="pillbtn" id="rs">Click to reset back to $10</button></div><div class="stats">${Stats.html()}</div></div>`;
+<h2 class="sec" style="margin-top:26px">💲 Your Balance ›</h2><div class="wallet"><div class="wtop"><img src="img/wallet.png" class="wi" alt="Wallet"><div><small>Current Balance:</small><div class="big2">$<span class="bal"></span> Steakcoin</div></div><button class="pillbtn" id="rs">Click to reset back to $10</button></div><div class="stats">${Stats.html()}</div></div>`;
 $('rs').onclick=()=>{Store.reset();this.home()};this.bal()},
 init(){document.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const i=b.parentElement.querySelector('.bet');i.value=Math.max(0.01,Math.floor(i.value*b.dataset.m*100)/100)});
 addEventListener('hashchange',()=>this.route());this.route()}};
