@@ -70,28 +70,27 @@ canvas{max-width:100%;background:#0a1620;border-radius:10px}
   border-radius: 16px !important;
   display: block !important;
 }
-/* Individual hover glow colors */
-
+/* Force individual glow colors */
 .card.c-plinko:hover {
-  box-shadow: 0 0 28px 7px rgba(180, 90, 30, 0.7);   /* Brown for Plinko */
+  box-shadow: 0 0 30px 8px rgba(180, 90, 30, 0.75) !important;
 }
 
 .card.c-mines:hover {
-  box-shadow: 0 0 28px 7px rgba(0, 140, 255, 0.65);   /* Blue for Mines */
+  box-shadow: 0 0 30px 8px rgba(0, 140, 255, 0.7) !important;
 }
 
 .card.c-crash:hover {
-  box-shadow: 0 0 28px 7px rgba(0, 200, 180, 0.65);   /* Teal/Cyan for Crash */
+  box-shadow: 0 0 30px 8px rgba(0, 200, 180, 0.7) !important;
 }
 
 .card.c-chicken:hover {
-  box-shadow: 0 0 28px 7px rgba(80, 140, 255, 0.65);  /* Blue for Chicken */
+  box-shadow: 0 0 30px 8px rgba(80, 140, 255, 0.7) !important;
 }
 
 .card.c-flip:hover {
-  box-shadow: 0 0 28px 7px rgba(0, 200, 80, 0.7);     /* Green for Flip */
+  box-shadow: 0 0 30px 8px rgba(0, 200, 80, 0.75) !important;
 }
 
 .card.c-aviamasters:hover {
-  box-shadow: 0 0 28px 7px rgba(220, 40, 40, 0.7);    /* Red for Aviamasters */
+  box-shadow: 0 0 30px 8px rgba(220, 40, 40, 0.75) !important;
 }
