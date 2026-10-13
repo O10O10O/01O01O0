@@ -1,4 +1,4 @@
-(()=>{const N=8,DS=110,START=49,DRIFT=3,RDROP=12,BOOST=3,PR=.3,M0=.1,D=(N+1)*DS;
+(()=>{const N=8,DS=110,START=49,DRIFT=3,RDROP=8,BOOST=3,PR=.52,M0=.1,D=(N+1)*DS;
 const V=[['+',1,20],['+',2,8],['+',5,2],['+',10,.5],['×',2,3],['×',3,1],['×',4,.4],['×',5,.2]],TOT=V.reduce((a,b)=>a+b[2],0);
 const pick=()=>{let r=Math.random()*TOT;for(const v of V)if((r-=v[2])<0)return v;return V[0]};
 function plan(){let alt=START,m=M0,pts=[[0,2],[45,START]],ev=[];
@@ -18,6 +18,7 @@ const clouds=Array.from({length:16},()=>({x:Math.random()*1100,y:30+Math.random(
 const burst=(x,y,col,n)=>{for(let i=0;i<n;i++){const a=Math.random()*6.28,v=40+Math.random()*160;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-40,l:1,c:col})}};
 function finish(win){const pay=win?bet*P.m:0;App.settle('AVIAMASTERS',bet,pay);lw.textContent='Last win: $'+App.f(pay);App.toast(win?`Landed! ${P.m.toFixed(2)}x → $${App.f(pay)}`:'Crashed into the sea! Lost $'+App.f(bet));st='end';hold=0}
 function update(dt){
+if(Math.random()<.035)amb.push({x:W+30,y:40+Math.random()*270,v:90+Math.random()*130});amb.forEach(a=>a.x-=a.v*dt);amb=amb.filter(a=>a.x>-40);
 if(st==='fly'){dist+=110*dt;py=f(altAt(P.pts,dist));
 while(idx<P.ev.length&&P.ev[idx].d<=dist){const e=P.ev[idx++];mHud=e.m;if(e.k==='r'){shake=14;burst(PXX,py,'#fb923c',26);pops.push({t:'÷2',x:PXX,y:py-24,a:0,c:'#f87171'})}else pops.push({t:e.op+e.v,x:PXX,y:py-24,a:0,c:'#4ade80'})}
 puffs.push({d:dist-8,y:py+2,a:1});
@@ -41,8 +42,9 @@ c.fillStyle='#0b1c3d';const o=(dist*PX*.25)%520;for(let k=-1;k<3;k++){const x=k*
 g=c.createLinearGradient(0,SEA,0,H);g.addColorStop(0,'#0e2c58');g.addColorStop(1,'#050f24');c.fillStyle=g;c.fillRect(-20,SEA,W+40,H-SEA+20);
 c.fillStyle='rgba(245,233,184,.13)';for(let r=0;r<7;r++)c.fillRect(690-22+r*2+Math.sin(t*2+r)*7,SEA+5+r*9,44-r*5,3);
 c.strokeStyle='#3b82f655';c.lineWidth=2;for(let r=0;r<3;r++){c.beginPath();for(let x=0;x<=W;x+=20)c.lineTo(x,SEA+8+r*14+Math.sin(x*.03+t*2+r)*3);c.stroke()}
-[0,250,500,750].forEach(d=>carrier(PXX+(d-dist)*PX));if(P){const fx=PXX+(D-dist)*PX;carrier(fx);c.fillStyle='#4ade80';c.font='bold 13px Montserrat,sans-serif';c.fillText('LAND HERE',fx+15,SEA-44)}
+[0,250,500,750].forEach(d=>carrier(PXX+(d-dist)*PX));amb.forEach(a=>missile(a.x,a.y));if(P){const fx=PXX+(D-dist)*PX;carrier(fx);}
 
+if(P)P.dec.forEach((e,i)=>{const x=PXX+(e.d-dist)*PX;if(x>-40&&x<W+40)missile(x,f(e.alt)+Math.sin(t*4+i*2)*2)});
 if(P)P.ev.forEach((e,i)=>{if(i<idx)return;const x=PXX+(e.d-dist)*PX;if(x<-40||x>W+40)return;const y=f(e.altB)+Math.sin(t*4+i)*2;
 if(e.k==='r')missile(x,y);else{c.save();c.shadowColor='#3b82f6';c.shadowBlur=16;c.fillStyle='#fff';c.font='900 30px Montserrat,sans-serif';c.fillText(e.op+e.v,x,y+10);c.restore()}});
 puffs.forEach(p=>{c.fillStyle=`rgba(255,255,255,${p.a*.5})`;c.beginPath();c.arc(PXX+(p.d-dist)*PX,p.y,4+(1-p.a)*6,0,7);c.fill()});
@@ -56,5 +58,5 @@ const alt=P&&st==='fly'?altAt(P.pts,dist):0,bad=st==='end'&&P&&P.crash;c.textAli
 c.textAlign='center';if(st==='idle'){c.fillStyle='#e2e8f0';c.font='500 18px Montserrat,sans-serif';c.fillText('Set your bet and launch the plane',W/2,200)}
 c.restore()}
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw(now/1000);raf=requestAnimationFrame(loop)}
-go.onclick=()=>{if(st!=='idle')return;bet=App.bet(el,'AVIAMASTERS');if(!bet)return;P=plan();idx=0;dist=0;mHud=M0;go.disabled=true;st='fly'};
+go.onclick=()=>{if(st!=='idle')return;bet=App.bet(el,'AVIAMASTERS');if(!bet)return;P=plan();P.dec=Array.from({length:6},()=>{const d=70+Math.random()*(D-130),a=altAt(P.pts,d),up=a<30||(a<55&&Math.random()<.5);return{d,alt:up?a+11+Math.random()*9:a-11-Math.random()*9}});idx=0;dist=0;mHud=M0;go.disabled=true;st='fly'};
 raf=requestAnimationFrame(loop);return()=>cancelAnimationFrame(raf)}};})();
