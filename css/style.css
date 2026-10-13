@@ -98,3 +98,9 @@ canvas{max-width:100%;background:#0a1620;border-radius:10px}
 .card.c-cases:hover {
   box-shadow: 0 0 32px 10px rgba(245, 158, 11, 0.75) !important;  /* Amber / Orange */
 }
+.wi {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 12px;
+}
