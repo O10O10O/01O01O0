@@ -60,3 +60,41 @@ canvas{max-width:100%;background:#0a1620;border-radius:10px}
 .brand{display:flex;flex-direction:column;line-height:1}.brand small{font-size:10px;color:var(--mute);margin-top:3px;white-space:nowrap}
 .logo{font-size:38px}
 .c-cases{background:url(../img/cases.png) center/cover,linear-gradient(135deg,#f59e0b,#92400e)}
+
+/* Individual hover under-glow for every game */
+
+.card.c-plinko:hover {
+  box-shadow: 0 0 32px 10px rgba(180, 90, 30, 0.7) !important;   /* Brown / Orange */
+}
+
+.card.c-mines:hover {
+  box-shadow: 0 0 32px 10px rgba(0, 150, 255, 0.7) !important;    /* Blue */
+}
+
+.card.c-crash:hover {
+  box-shadow: 0 0 32px 10px rgba(0, 200, 180, 0.7) !important;    /* Teal / Cyan */
+}
+
+.card.c-chicken:hover {
+  box-shadow: 0 0 32px 10px rgba(100, 80, 255, 0.7) !important;   /* Purple-Blue */
+}
+
+.card.c-flip:hover {
+  box-shadow: 0 0 32px 10px rgba(0, 200, 80, 0.75) !important;    /* Green */
+}
+
+.card.c-aviamasters:hover {
+  box-shadow: 0 0 32px 10px rgba(220, 40, 40, 0.75) !important;   /* Red */
+}
+
+.card.c-doubleornothing:hover {
+  box-shadow: 0 0 32px 10px rgba(34, 197, 94, 0.75) !important;   /* Bright Green */
+}
+
+.card.c-blackjack:hover {
+  box-shadow: 0 0 32px 10px rgba(15, 118, 110, 0.75) !important;  /* Dark Teal */
+}
+
+.card.c-cases:hover {
+  box-shadow: 0 0 32px 10px rgba(245, 158, 11, 0.75) !important;  /* Amber / Orange */
+}
