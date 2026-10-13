@@ -29,7 +29,7 @@ confetti(host,n){const w=host.clientWidth||600,cols=['#fde047','#4ade80','#60a5f
 @keyframes cfa{35%{transform:translate(calc(var(--dx)*.6),var(--dy)) rotate(calc(var(--r)*.5))}to{transform:translate(var(--dx),260px) rotate(var(--r));opacity:0}}
 .play>*{min-width:0}`;document.head.appendChild(s)})();
 const $=id=>document.getElementById(id);
-const LIST=[['plinko','PLINKO','<i class="badge">10000×</i><b class="big">🪙</b>'],['mines','MINES','<span class="sm">💣</span><b class="big">💎</b>'],['crash','CRASH','<b class="big">🚀</b>'],['chicken','CHICKEN','<b class="big">🐔</b>'],['flip','FLIP','<b class="big">🪙</b>'],['aviamasters','AVIAMASTERS','<b class="big">✈️</b>'],['doubleornothing','DOUBLE OR NOTHING','<b class="big" style="font-size:56px;color:#064e2b;font-weight:900">X2</b>'],['blackjack','BLACKJACK','<b class="big" style="font-size:54px">♠♥</b>'],['lockpick','LOCKPICK','<b class="big">🔒</b>']];
+const LIST=[['plinko','PLINKO'],['mines','MINES'],['crash','CRASH'],['chicken','CHICKEN'],['flip','FLIP'],['aviamasters','AVIAMASTERS'],['doubleornothing','DOUBLE OR NOTHING'],['blackjack','BLACKJACK'],['cases','CASES']];
 const App={cur:null,live:null,
 f:n=>(+n).toFixed(2),
 toast(m){let t=$('stk-toast');if(!t){t=document.createElement('div');t.id='stk-toast';document.body.appendChild(t)}
@@ -57,7 +57,7 @@ this.cur=g.mount($('gm'))||null;this.bal()},
 welcome(){this.mid('');$('app').innerHTML='<section class="welcome"><h1>Welcome to Steak 🔥</h1><input id="gu" placeholder="Type username here…" maxlength="16" autofocus><button id="gb" class="pillbtn">Continue…</button></section>';
 const go=()=>{if(this.setUser($('gu').value)){location.hash='';this.route()}else this.toast('Type a username first')};
 $('gb').onclick=go;$('gu').onkeydown=e=>{if(e.key==='Enter')go()}},
-home(){this.mid('user');$('app').innerHTML=`<h2 class="sec">🔥 Steak Originals ›</h2><div class="cards">${LIST.map(([k,n,art])=>`<a class="card c-${k}" href="#${k}">${art}<span class="nm">${n}</span></a>`).join('')}</div>
+home(){this.mid('user');$('app').innerHTML=`<h2 class="sec">🔥 Steak Originals ›</h2><div class="cards">${LIST.map(([k,n])=>`<a class="card c-${k}" href="#${k}" aria-label="${n}" title="${n}"></a>`).join('')}</div>
 <h2 class="sec" style="margin-top:26px">💲 Your Balance ›</h2><div class="wallet"><div class="wtop"><span class="wi">👛</span><div><small>Current Balance:</small><div class="big2">$<span class="bal"></span> Steakcoin</div></div><div id="rsw"><button class="pillbtn" id="rs">Click to reset back to $10</button></div></div><div class="stats">${Stats.html()}</div></div>`;
 const rsw=$('rsw'),ask=()=>{rsw.innerHTML='<button class="pillbtn" id="ry" style="border-color:#ef4444;color:#fca5a5">Are you sure?</button> <button class="pillbtn" id="rn">Cancel</button>';
 $('ry').onclick=()=>{Store.reset();this.home();this.toast('Balance and stats reset')};
