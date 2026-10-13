@@ -1,10 +1,10 @@
 Games.blackjack={title:'BLACKJACK',mount(el){
 if(!document.getElementById('stk-bj')){const s=document.createElement('style');s.id='stk-bj';s.textContent=`
-.bj{min-height:540px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:20px}
+.bj{background:radial-gradient(ellipse at 50% 45%,#1f8a52 0%,#14633f 55%,#0b3b27 100%);box-shadow:inset 0 0 70px #000b,inset 0 0 0 6px #5b3a1e;border-radius:14px;min-height:540px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:20px}
 .row{display:flex;gap:30px;justify-content:center;align-items:flex-end;min-height:140px}.col{display:flex;flex-direction:column;align-items:center;gap:6px}
 .hand{display:flex}.pc{width:64px;height:92px;background:#fff;border-radius:8px;color:#0f172a;display:flex;flex-direction:column;align-items:center;padding:4px;font-weight:800;font-size:22px;margin-left:-30px;box-shadow:0 2px 6px #0006}
 .pc:first-child{margin-left:0}.pc.rd{color:#ef4144}.pc i{font-style:normal;font-size:15px}.pc span{font-size:28px;margin-top:4px}
-.pc.back{background:repeating-linear-gradient(45deg,#2563eb 0 6px,#1d4ed8 6px 12px)}.pc.dl{animation:dln .35s ease-out}@keyframes dln{from{transform:translateY(-60px) scale(.9);opacity:0}}
+.pc.back{background:repeating-linear-gradient(45deg,#2563eb 0 6px,#1d4ed8 6px 12px)}#dl .pc.dl{animation:dnd .55s ease-out}#pl .pc.dl{animation:dnp .55s ease-out}@keyframes dnd{from{transform:translate(-420px,150px) rotate(-25deg);opacity:0}30%{opacity:1}}@keyframes dnp{from{transform:translate(-420px,-150px) rotate(-25deg);opacity:0}30%{opacity:1}}
 .tp{background:#2a4259;color:#fff;border-radius:999px;padding:2px 14px;font-size:13px;font-weight:700}.hg .tp{background:#16a34a}.hg .tp.bust,.tp.bust{background:#b91c1c}
 .hg.act .pc{outline:3px solid #22c55e}.rib{background:#1e3347;color:#9db8d2;padding:8px 46px;text-align:center;font-size:12px;font-weight:700;display:flex;flex-direction:column;gap:4px;border-radius:4px}
 .bjb{display:grid;grid-template-columns:1fr 1fr;gap:8px}.bg{background:#15803d;color:#fff}.by{background:#a16207;color:#fff}`;document.head.appendChild(s)}

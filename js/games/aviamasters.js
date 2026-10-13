@@ -1,5 +1,5 @@
-(()=>{const N=8,DS=110,START=49,DRIFT=3,RDROP=8,BOOST=3,FUEL=5,PR=.38,M0=.1,D=(N+1)*DS;
-const V=[['+',1,20],['+',2,5],['+',5,.8],['+',10,.15],['×',2,2.5],['×',3,1],['×',4,.3],['f',0,70]],TOT=V.reduce((a,b)=>a+b[2],0);
+(()=>{const N=8,DS=110,START=49,DRIFT=3,RDROP=8,BOOST=3,FUEL=5,PR=.5,M0=1,D=(N+1)*DS;
+const V=[['+',1,32],['+',2,5],['+',5,.8],['+',10,.15],['×',2,2.5],['×',3,1],['×',4,.3],['f',0,48]],TOT=V.reduce((a,b)=>a+b[2],0);
 const pick=()=>{let r=Math.random()*TOT;for(const v of V)if((r-=v[2])<0)return v;return V[0]};
 function plan(){let alt=START,m=M0,pts=[[0,2],[45,START]],ev=[];
 for(let i=1;i<=N;i++){const d=i*DS,ab=alt-DRIFT;
@@ -7,7 +7,7 @@ if(ab<=0){const p=pts[pts.length-1],dc=p[0]+p[1]/(p[1]-ab)*(d-p[0]);pts.push([dc
 pts.push([d,ab]);const e={d,altB:ab};
 if(Math.random()<PR){e.k='r';m/=2;alt=ab-RDROP}else{const v=pick();if(v[0]==='f'){e.k='f';alt=ab+FUEL}else{e.k='m';e.op=v[0];e.v=v[1];m=v[0]==='+'?m+v[1]:m*v[1];alt=ab+BOOST}}
 e.m=m;ev.push(e);if(alt<=0){pts.push([d+20,0]);return{ev,pts,crash:true,dc:d+20,m}}pts.push([d+20,alt])}
-alt-=DRIFT;if(alt<=0){pts.push([D,0]);return{ev,pts,crash:true,dc:D,m}}const mm=Math.min(m,250);pts.push([D,alt]);return{ev,pts,crash:false,m:mm,fall:Math.random()<(mm<2.5?.1:mm<5?.2:mm<7?.25:.3)}}
+alt-=DRIFT;if(alt<=0){pts.push([D,0]);return{ev,pts,crash:true,dc:D,m}}const mm=Math.min(m,250);pts.push([D,alt]);return{ev,pts,crash:false,m:mm,fall:Math.random()<(mm<2.5?.05:mm<5?.1:mm<7?.15:.2)}}
 const altAt=(pts,x)=>{for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1];if(x<b[0])return a[1]+(b[1]-a[1])*Math.max(0,(x-a[0])/(b[0]-a[0]))}return pts[pts.length-1][1]};
 Games.aviamasters={title:'AVIAMASTERS',plan,mount(el){
 el.innerHTML=`<div class="play"><div class="side"><label>Bet</label>${App.betHTML()}<button class="btn" id="go">Launch plane</button><div class="hist">Grab +n and ×2–×4 items to grow the multiplier; fuel cans lift the plane without adding any. Rockets halve it and knock the plane down. Land on the carrier to win (max 250x), but the plane can still slide off the runway. Hit the sea and you lose your bet.</div><div class="hist" id="lw">Last win: $0.00</div></div><div class="stage"><canvas width="800" height="420"></canvas></div></div>`;
