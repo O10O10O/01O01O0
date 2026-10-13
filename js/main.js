@@ -3,7 +3,8 @@ const FX={boom(host,x,y,big){const f=document.createElement('div');f.className='
 const cols=['#fde047','#fb923c','#ef4444','#fff'];
 for(let i=0;i<(big?22:14);i++){const p=document.createElement('div');p.className='xp';const a=Math.random()*6.28,d=30+Math.random()*(big?70:50);
 p.style.setProperty('--dx',Math.cos(a)*d+'px');p.style.setProperty('--dy',Math.sin(a)*d+'px');p.style.background=cols[i%4];f.appendChild(p)}
-host.appendChild(f);setTimeout(()=>f.remove(),900)}};
+host.appendChild(f);setTimeout(()=>f.remove(),900)},
+confetti(host,n){const w=host.clientWidth||600,cols=['#fde047','#4ade80','#60a5fa','#f472b6','#fb923c'];for(let i=0;i<(n||40);i++){const d=document.createElement('i');d.className='cfi';d.style.cssText=`left:${w/2}px;top:40%;background:${cols[i%5]};--dx:${(Math.random()-.5)*w*.8}px;--dy:${-80-Math.random()*160}px;--r:${Math.random()*720}deg;animation-delay:${Math.random()*.15}s`;host.appendChild(d);setTimeout(()=>d.remove(),1700)}}};
 (()=>{const s=document.createElement('style');s.textContent=`
 #toast{display:none}
 #stk-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);background:#0d1b27;color:#fff;border:2px solid #9db8d2;border-radius:12px;padding:12px 24px;font:500 16px Montserrat,sans-serif;opacity:0;pointer-events:none;z-index:9999;white-space:nowrap}
@@ -23,9 +24,12 @@ host.appendChild(f);setTimeout(()=>f.remove(),900)}};
 .xf{position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:#fde047;animation:xf .35s ease-out forwards}
 @keyframes xf{to{transform:scale(4);opacity:0}}
 .xp{position:absolute;left:-3px;top:-3px;width:7px;height:7px;border-radius:50%;animation:xp .8s ease-out forwards}
-@keyframes xp{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}`;document.head.appendChild(s)})();
+@keyframes xp{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.cfi{position:absolute;width:8px;height:12px;z-index:8;pointer-events:none;animation:cfa 1.5s ease-out forwards}
+@keyframes cfa{35%{transform:translate(calc(var(--dx)*.6),var(--dy)) rotate(calc(var(--r)*.5))}to{transform:translate(var(--dx),260px) rotate(var(--r));opacity:0}}
+.play>*{min-width:0}`;document.head.appendChild(s)})();
 const $=id=>document.getElementById(id);
-const LIST=[['plinko','PLINKO','<i class="badge">10000×</i><b class="big">🪙</b>'],['mines','MINES','<span class="sm">💣</span><b class="big">💎</b>'],['crash','CRASH','<b class="big">🚀</b>'],['chicken','CHICKEN','<b class="big">🐔</b>'],['flip','FLIP','<b class="big">🪙</b>'],['aviamasters','AVIAMASTERS','<b class="big">✈️</b>']];
+const LIST=[['plinko','PLINKO','<i class="badge">10000×</i><b class="big">🪙</b>'],['mines','MINES','<span class="sm">💣</span><b class="big">💎</b>'],['crash','CRASH','<b class="big">🚀</b>'],['chicken','CHICKEN','<b class="big">🐔</b>'],['flip','FLIP','<b class="big">🪙</b>'],['aviamasters','AVIAMASTERS','<b class="big">✈️</b>'],['doubleornothing','DOUBLE OR NOTHING','<b class="big" style="font-size:56px;color:#064e2b;font-weight:900">X2</b>'],['blackjack','BLACKJACK','<b class="big" style="font-size:54px">♠♥</b>'],['lockpick','LOCKPICK','<b class="big">🔒</b>']];
 const App={cur:null,live:null,
 f:n=>(+n).toFixed(2),
 toast(m){let t=$('stk-toast');if(!t){t=document.createElement('div');t.id='stk-toast';document.body.appendChild(t)}
