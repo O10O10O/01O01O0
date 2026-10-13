@@ -50,53 +50,13 @@ canvas{max-width:100%;background:#0a1620;border-radius:10px}
 .lane{min-width:74px;height:120px;border-radius:10px;background:#1e3347;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:8px;font-size:12px;color:var(--mute)}.lane span{font-size:30px}.lane.cur{outline:2px solid #22c55e}
 #coin{width:130px;height:130px;margin:20px auto;border-radius:50%;background:radial-gradient(#fde047,#d97706);display:flex;align-items:center;justify-content:center;font-size:54px;font-weight:900;color:#78350f}
 #coin.spin{animation:fl .7s}@keyframes fl{to{transform:rotateY(1080deg)}}
-/* Force hide everything on the cards except the image */
-.card .big,
-.card .sm,
-.card .badge,
-.card i,
-.card .nm,
-.card span {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  font-size: 0 !important;
-}
+.hist{color:var(--mute);font-size:13px;margin-top:8px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,30px);background:var(--panel);border:2px solid var(--line);padding:12px 20px;border-radius:12px;opacity:0;transition:.25s;pointer-events:none;z-index:30}#toast.on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-.card-img {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  border-radius: 16px !important;
-  display: block !important;
-}
-/* Force individual glow colors */
-.card.c-plinko:hover {
-  box-shadow: 0 0 30px 8px rgba(180, 90, 30, 0.75) !important;
-}
-
-.card.c-mines:hover {
-  box-shadow: 0 0 30px 8px rgba(0, 140, 255, 0.7) !important;
-}
-
-.card.c-crash:hover {
-  box-shadow: 0 0 30px 8px rgba(0, 200, 180, 0.7) !important;
-}
-
-.card.c-chicken:hover {
-  box-shadow: 0 0 30px 8px rgba(80, 140, 255, 0.7) !important;
-}
-
-.card.c-flip:hover {
-  box-shadow: 0 0 30px 8px rgba(0, 200, 80, 0.75) !important;
-}
-
-.card.c-aviamasters:hover {
-  box-shadow: 0 0 30px 8px rgba(220, 40, 40, 0.75) !important;
-}
-.wi {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  border-radius: 8px;
-}
+.c-doubleornothing{background:url(../img/doubleornothing.png) center/cover,linear-gradient(#86efac,#16a34a)}
+.c-blackjack{background:url(../img/blackjack.png) center/cover,linear-gradient(#1e293b,#0f766e)}
+.c-lockpick{background:url(../img/lockpick.png) center/cover,linear-gradient(#475569,#0f172a)}
+.card .nm{padding:0 6px;line-height:1.05;font-size:22px}
+.brand{display:flex;flex-direction:column;line-height:1}.brand small{font-size:10px;color:var(--mute);margin-top:3px;white-space:nowrap}
+.logo{font-size:38px}
