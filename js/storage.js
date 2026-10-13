@@ -1,4 +1,4 @@
-const Store={key:'steak_v1',d:null,
+const Store={key:'steak_v1.1',d:null,
 def(){return{user:'',balance:10,pw:0,pl:0,g:{}}},
 num(v,fb){return typeof v==='number'&&isFinite(v)?v:fb},
 load(){let o=null;try{o=JSON.parse(localStorage.getItem(this.key))}catch(e){}
