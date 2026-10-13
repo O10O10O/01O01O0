@@ -1,6 +1,6 @@
 Games.blackjack={title:'BLACKJACK',mount(el){
 if(!document.getElementById('stk-bj')){const s=document.createElement('style');s.id='stk-bj';s.textContent=`
-.bj{background:radial-gradient(ellipse at 50% 45%,#1f8a52 0%,#14633f 55%,#0b3b27 100%);box-shadow:inset 0 0 70px #000b,inset 0 0 0 6px #5b3a1e;border-radius:14px;min-height:540px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:20px}
+.bj{background:radial-gradient(ellipse at 50% 45%,#1f8a52 0%,#14633f 55%,#0b3b27 100%);box-shadow:inset 0 0 70px #000b,inset 0 0 0 6px #5b3a1e;border-radius:14px;min-height:0;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:20px}
 .row{display:flex;gap:30px;justify-content:center;align-items:flex-end;min-height:140px}.col{display:flex;flex-direction:column;align-items:center;gap:6px}
 .hand{display:flex}.pc{width:64px;height:92px;background:#fff;border-radius:8px;color:#0f172a;display:flex;flex-direction:column;align-items:center;padding:4px;font-weight:800;font-size:22px;margin-left:-30px;box-shadow:0 2px 6px #0006}
 .pc:first-child{margin-left:0}.pc.rd{color:#ef4144}.pc i{font-style:normal;font-size:15px}.pc span{font-size:28px;margin-top:4px}
