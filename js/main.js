@@ -58,7 +58,7 @@ welcome(){this.mid('');$('app').innerHTML='<section class="welcome"><h1>Welcome 
 const go=()=>{if(this.setUser($('gu').value)){location.hash='';this.route()}else this.toast('Type a username first')};
 $('gb').onclick=go;$('gu').onkeydown=e=>{if(e.key==='Enter')go()}},
 home(){this.mid('user');$('app').innerHTML=`<h2 class="sec">🔥 Steak Originals ›</h2><div class="cards">${LIST.map(([k,n])=>`<a class="card c-${k}" href="#${k}" aria-label="${n}" title="${n}"></a>`).join('')}</div>
-<h2 class="sec" style="margin-top:26px">💲 Your Balance ›</h2><div class="wallet"><div class="wtop"><span class="wi">👛</span><div><small>Current Balance:</small><div class="big2">$<span class="bal"></span> Steakcoin</div></div><div id="rsw"><button class="pillbtn" id="rs">Click to reset back to $10</button></div></div><div class="stats">${Stats.html()}</div></div>`;
+<h2 class="sec" style="margin-top:26px">💲 Your Balance ›</h2><div class="wallet"><div class="wtop"><img src="img/wallet.png" class="wi" alt="Wallet"><div><small>Current Balance:</small><div class="big2">$<span class="bal"></span> Steakcoin</div></div><div id="rsw"><button class="pillbtn" id="rs">Click to reset back to $10</button></div></div><div class="stats">${Stats.html()}</div></div>`;
 const rsw=$('rsw'),ask=()=>{rsw.innerHTML='<button class="pillbtn" id="ry" style="border-color:#ef4444;color:#fca5a5">Are you sure?</button> <button class="pillbtn" id="rn">Cancel</button>';
 $('ry').onclick=()=>{Store.reset();this.home();this.toast('Balance and stats reset')};
 $('rn').onclick=()=>{rsw.innerHTML='<button class="pillbtn" id="rs">Click to reset back to $10</button>';$('rs').onclick=ask}};
