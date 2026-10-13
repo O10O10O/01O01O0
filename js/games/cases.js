@@ -17,7 +17,14 @@ if(!document.getElementById('stk-cs')){const s=document.createElement('style');s
 .cs-sel{position:absolute;left:50%;top:4px;width:${TW+10}px;height:160px;transform:translateX(-50%);border:3px solid #fff;border-radius:14px;box-shadow:0 0 18px #fff6;pointer-events:none}
 .cs-ptr{position:absolute;left:50%;top:166px;width:3px;height:34px;margin-left:-1px;background:#fff;pointer-events:none}.cs-ptr::after{content:"";position:absolute;left:-8px;bottom:-14px;width:16px;height:16px;border:3px solid #fff;border-radius:50%;background:#0a1620}
 .cs-res{margin-top:14px;font-size:17px;min-height:50px}`;document.head.appendChild(s)}
-el.innerHTML=`<div class="play"><div class="side"><label>Bet</label>${App.betHTML()}<button class="btn" id="go">Lock in Bet</button><div class="cs-odds"><h3>Case Odds:</h3>${RAR.map(r=>`<div style="color:${r.k==='Secret'?'#0a0a0a;text-shadow:0 0 6px #fff,0 0 2px #888':r.c}">${r.k}: ${r.p}%</div>`).join('')}</div></div><div class="stage"><div style="text-align:left;color:#7d93a8">Past Rolls:</div><div class="cs-past" id="pa"></div><div class="cs-wrap" id="wr"><div class="cs-strip" id="sr"></div><div class="cs-sel"></div><div class="cs-ptr"></div></div><div class="cs-res" id="rs">Lock in a bet to open a case.</div></div></div>`;
+el.innerHTML=`<div class="play"><div class="side"><label>Bet</label>${App.betHTML()}<button class="btn" id="go">Lock in Bet</button><div class="cs-odds"><h3>Case Odds:</h3>
+<div style="color:#94a3b8">Common: 50%</div>
+<div style="color:#22c55e">Uncommon: 27%</div>
+<div style="color:#4f6bff">Rare: 13%</div>
+<div style="color:#fbbf24">Legendary: 6%</div>
+<div style="color:#ef4444">Mythic: 3%</div>
+<div style="color:#0a0a0a;text-shadow:0 0 6px #fff,0 0 2px #888">Secret: 1%</div>
+</div></div><div class="stage"><div style="text-align:left;color:#7d93a8">Past Rolls:</div><div class="cs-past" id="pa"></div><div class="cs-wrap" id="wr"><div class="cs-strip" id="sr"></div><div class="cs-sel"></div><div class="cs-ptr"></div></div><div class="cs-res" id="rs">Lock in a bet to open a case.</div></div></div>`;
 const q=s=>el.querySelector(s),go=q('#go'),wr=q('#wr'),sr=q('#sr'),rs=q('#rs'),br=q('.betrow'),bi=q('.bet');
 let arr=[],sel=REST,busy=false,rd=null,past=[],prev=null,tm=[],raf=0,x0=0,xT=0;
 const rnd=()=>{try{return crypto.getRandomValues(new Uint32Array(1))[0]/4294967296}catch(e){return Math.random()}};
