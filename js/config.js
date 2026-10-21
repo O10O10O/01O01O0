@@ -1,0 +1,29 @@
+/* PlaySteak v2.0 - the only place ranks, rewards, odds, prices, shop and quest rules are defined.
+   NOTE: rank multipliers were removed. Ranks give starting Steakcoin + Gems on rank-up instead. */
+const CFG={
+UNRANKED_START:10,                          // configurable default test balance for Unranked players
+GEM:{TO_COIN:50,REF_USD:500},               // 1 Gem converts to 50 Steakcoin. REF_USD (1 Gem = $500) is a SEPARATE reference value for rank valuation only.
+// RANKS[i].req = requirement to go from rank i to i+1;  RANKS[i].rw = starting Steakcoin (c) + Gems (g) granted on reaching rank i.
+RANKS:[
+{n:'Unranked',g:['#9ca3af','#6b7280'],req:{c:2500,r:50},   rw:{c:10,g:0}},
+{n:'Copper',  g:['#e8b27a','#a0612f'],req:{c:5000,r:60},  rw:{c:50,g:1}},
+{n:'Bronze',  g:['#c58a5c','#7a4526'],req:{c:7500,r:90},  rw:{c:100,g:2}},
+{n:'Silver',  g:['#f8fafc','#aab4c0'],req:{c:10000,r:100},  rw:{c:250,g:3}},
+{n:'Iron',    g:['#b4b9c4','#4b5563'],req:{c:15000,r:200}, rw:{c:250,g:4}},
+{n:'Ruby',    g:['#f87171','#8f1818'],req:{c:20000,r:300}, rw:{c:250,g:5}},
+{n:'Emerald', g:['#4ade80','#14532d'],req:{c:50000,r:400},rw:{c:250,g:6}},
+{n:'Amethyst',g:['#d8b4fe','#6d28d9'],req:{c:75000,r:600},rw:{c:250,g:7}},
+{n:'Diamond', g:['#93c5fd','#1e3a8a'],req:{c:100000,r:750},rw:{c:500,g:8}},
+{n:'Ascended',g:['#ffffff','#7dd3fc'],req:{c:150000,r:1000},rw:{c:500,g:10}},
+{n:'Verifier',g:['#fde68a','#d97706'],req:null,           rw:{c:750,g:12}}],
+AUTOSPIN_RANK:3,                            // Silver (index in RANKS) unlocks Auto-Spin on Cases
+CONV:{PLINKO:20,FLIP:5,'DOUBLE OR NOTHING':5},   // raw rounds per 1 qualified mini-game round (others 1)
+MIN_BET:{PLINKO:0.1},DEFAULT_MIN:0.01,
+// Rarity: gems = normal price, deal = special-deal price, w = shop appearance weight (configurable; favours Common/Rare).
+RAR:{common:{n:'Common',gems:1,deal:1,w:50,color:'#f1f5f9'},rare:{n:'Rare',gems:2,deal:1,w:30,color:'#4f7cff'},epic:{n:'Epic',gems:3,deal:2,w:15,color:'#d066e8'},legendary:{n:'Legendary',gems:5,deal:3,w:5,color:'#ffd84d'}},
+SHOP:{ROTATION_MS:12*3600*1000,GRADS:4,TAGS:3,DEALS:4},   // 3 featured + 4 special deals = 7 offers
+QUEST:{DAILY_MS:24*3600*1000,WEEKLY_MS:7*24*3600*1000,WEEK_OFFSET_MS:4*24*3600*1000, // weeks start Monday 00:00 UTC
+daily:[{id:'d_rounds',kind:'rounds',target:100,gems:2,name:'Play 100 Minigame Rounds'},{id:'d_profit',kind:'profit',target:500,gems:1,name:'Get $500 Steakcoin Profit from Minigames'}],
+weekly:[{id:'w_rounds',kind:'rounds',target:250,gems:3,name:'Play 250 Minigame Rounds'},{id:'w_profit',kind:'profit',target:2500,gems:2,name:'Get $2,500 Steakcoin Profit from Minigames'},{id:'w_rank',kind:'rank',target:1,gems:1,name:'Rank up once'}]},
+DAILY:{COOLDOWN_MS:24*3600*1000,BONUS_MS:15*60*1000,BONUS_MULT:2,SPIN_MS:6500,   // 2X bonus multiplies winning PROFIT while active
+REWARDS:[{id:'low',p:60,min:250,max:750},{id:'gem',p:20,min:1,max:4},{id:'x2',p:20}]}};  // p sums to 100; gem reward is 1-4 Gems

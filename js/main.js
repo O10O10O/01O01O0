@@ -29,39 +29,32 @@ confetti(host,n){const w=host.clientWidth||600,cols=['#fde047','#4ade80','#60a5f
 @keyframes cfa{35%{transform:translate(calc(var(--dx)*.6),var(--dy)) rotate(calc(var(--r)*.5))}to{transform:translate(var(--dx),260px) rotate(var(--r));opacity:0}}
 .play>*{min-width:0}`;document.head.appendChild(s)})();
 const $=id=>document.getElementById(id);
-const LIST=[['plinko','PLINKO'],['mines','MINES'],['crash','CRASH'],['chicken','CHICKEN'],['flip','FLIP'],['aviamasters','AVIAMASTERS'],['doubleornothing','DOUBLE OR NOTHING'],['blackjack','BLACKJACK'],['cases','CASES']];
+const LIST=[['plinko','PLINKO'],['mines','MINES'],['crash','CRASH'],['chicken','CHICKEN'],['flip','FLIP'],['aviamasters','AVIAMASTERS'],['doubleornothing','DOUBLE OR NOTHING'],['blackjack','BLACKJACK'],['cases','CASES'],['guessthecup','GUESS THE CUP']];
+const Pages={};
 const App={cur:null,live:null,
 f:n=>(+n).toFixed(2),
 toast(m){let t=$('stk-toast');if(!t){t=document.createElement('div');t.id='stk-toast';document.body.appendChild(t)}
-t.textContent=m;t.className='';void t.offsetWidth;t.className='show '+(/lost|boom|splat|crash|not enough|enter a/i.test(m)?'bad':/cashed|landed|\+\$|saved/i.test(m)?'good':'')},
-bal(){document.querySelectorAll('.bal').forEach(e=>e.textContent=this.f(Store.d.balance))},
+t.textContent=m;t.className='';void t.offsetWidth;t.className='show '+(/lost|boom|splat|crash|not enough|enter a|minimum|at most/i.test(m)?'bad':/cashed|landed|reward|\+\$|saved/i.test(m)?'good':'')},
+bal(){document.querySelectorAll('.bal').forEach(e=>e.textContent=this.f(Store.d.balance));document.querySelectorAll('.gembal').forEach(e=>e.textContent=Store.d.gems);if(typeof Shell!=='undefined')Shell.update()},
 betHTML(){return '<div class="betrow"><input class="bet" type="number" min="0.01" step="0.01" value="1"><button class="mini" data-m="0.5">½</button><button class="mini" data-m="2">2×</button></div>'},
+/* Wager path: validation lives in Econ.checkBet (not just the HTML input). */
 bet(el,game,keep){if(!Store.d.user){this.route();return 0}
-const v=Math.round(parseFloat(el.querySelector('.bet').value)*100)/100;
-if(!(v>0)){this.toast('Enter a bet above 0');return 0}
-if(v>Store.d.balance+1e-9){this.toast('Not enough Steakcoin');return 0}
-Store.d.balance=Math.round((Store.d.balance-v)*100)/100;if(!keep)this.live={game,bet:v};Store.save();this.bal();return v},
-settle(game,bet,pay){pay=Math.round(pay*100)/100;Store.d.balance=Math.round((Store.d.balance+pay)*100)/100;
-if(this.live&&this.live.game===game&&this.live.bet===bet)this.live=null;Stats.record(game,bet,pay);this.bal()},
+const c=Econ.checkBet(el.querySelector('.bet').value,game,Store.d.balance);if(!c.ok){this.toast(c.msg);return 0}
+Store.d.balance=Econ.r2(Store.d.balance-c.v);if(!keep)this.live={game,bet:c.v};Store.save();this.bal();return c.v},
+/* Settlement path: returns the FINAL payout (after rank/bonus profit multiplier). */
+settle(game,bet,gross){const pay=Econ.settle(game,bet,gross);if(this.live&&this.live.game===game&&this.live.bet===bet)this.live=null;this.bal();return pay},
 setUser(n){n=(n||'').trim().slice(0,16);if(!n)return false;Store.d.user=n;Store.save();return true},
-mid(t){const m=$('mid');
-if(t==='user'){m.innerHTML='<input id="un" placeholder="Set username…" maxlength="16">';const u=$('un');u.value=Store.d.user;u.onchange=()=>{if(this.setUser(u.value))this.toast('Username saved');else u.value=Store.d.user};u.onkeydown=e=>{if(e.key==='Enter')u.blur()}}
-else if(t==='bal')m.innerHTML='<div class="pill">BALANCE: $<span class="bal"></span> SteakCoin</div>';else m.innerHTML=''},
 route(){if(this.cur){this.cur();this.cur=null}
 if(this.live){const l=this.live;this.live=null;this.settle(l.game,l.bet,0)}
+Daily.credit();   // pays a claimed reward if the page was refreshed mid-spin
 if(!Store.d.user){this.welcome();return}
-const g=Games[location.hash.slice(1)];
-if(!g){this.home();return}
-this.mid('bal');$('app').innerHTML=`<h2 class="gt">&lt; ${g.title} &gt;</h2><div class="frame" id="gm"></div>`;
+Shell.show(true);const k=location.hash.slice(1),g=Games[k],p=Pages[k];
+if(p){this.cur=p.mount($('app'))||null;this.bal();return}
+if(!g){this.cur=Dash.home($('app'))||null;this.bal();return}
+$('app').innerHTML=`<h2 class="gt">&lt; ${g.title} &gt;</h2><div class="frame" id="gm"></div>`;
 this.cur=g.mount($('gm'))||null;this.bal()},
-welcome(){this.mid('');$('app').innerHTML='<section class="welcome"><h1>Welcome to Steak 🔥</h1><input id="gu" placeholder="Type username here…" maxlength="16" autofocus><button id="gb" class="pillbtn">Continue…</button></section>';
+welcome(){Shell.show(false);$('app').innerHTML='<section class="welcome"><h1>Welcome to Steak 🔥</h1><input id="gu" placeholder="Type username here…" maxlength="16" autofocus><button id="gb" class="pillbtn">Continue…</button></section>';
 const go=()=>{if(this.setUser($('gu').value)){location.hash='';this.route()}else this.toast('Type a username first')};
 $('gb').onclick=go;$('gu').onkeydown=e=>{if(e.key==='Enter')go()}},
-home(){this.mid('user');$('app').innerHTML=`<h2 class="sec">🔥 Steak Original Minigames ›</h2><div class="cards">${LIST.map(([k,n])=>`<a class="card c-${k}" href="#${k}" aria-label="${n}" title="${n}"></a>`).join('')}</div>
-<h2 class="sec" style="margin-top:26px">💲 Your Balance ›</h2><div class="wallet"><div class="wtop"><img src="img/wallet.png" class="wi" alt="Wallet"><div><small>Current Balance:</small><div class="big2">$<span class="bal"></span> Steakcoin</div></div><div id="rsw"><button class="pillbtn" id="rs">Click to reset back to $10</button></div></div><div class="stats">${Stats.html()}</div></div>`;
-const rsw=$('rsw'),ask=()=>{rsw.innerHTML='<button class="pillbtn" id="ry" style="border-color:#ef4444;color:#fca5a5">Are you sure?</button> <button class="pillbtn" id="rn">Cancel</button>';
-$('ry').onclick=()=>{Store.reset();this.home();this.toast('Balance and stats reset')};
-$('rn').onclick=()=>{rsw.innerHTML='<button class="pillbtn" id="rs">Click to reset back to $10</button>';$('rs').onclick=ask}};
-$('rs').onclick=ask;this.bal()},
-init(){document.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const i=b.parentElement.querySelector('.bet');i.value=Math.max(0.01,Math.floor(i.value*b.dataset.m*100)/100)});
+init(){document.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const i=b.parentElement.querySelector('.bet');i.value=Math.max(+i.min||0.01,Math.floor(i.value*b.dataset.m*100)/100)});
 addEventListener('hashchange',()=>this.route());this.route()}};
