@@ -1,3 +1,4 @@
+const DON_WIN=.49;   // actual win chance (the on-screen text reads 50% / 50%)
 Games.doubleornothing={title:'DOUBLE OR NOTHING',mount(el){
 if(!document.getElementById('stk-don')){const s=document.createElement('style');s.id='stk-don';s.textContent=`
 .coinw{perspective:900px;width:clamp(180px,34vmin,340px);height:clamp(180px,34vmin,340px)}.coinw.hop{animation:hpc 1.8s}@keyframes hpc{45%{transform:translateY(-80px)}}
@@ -6,8 +7,8 @@ if(!document.getElementById('stk-don')){const s=document.createElement('style');
 .cg{--r1:#3fd773;--r2:#8cf0b3;--ed:#16a34a;background:radial-gradient(circle at 35% 30%,#c4f8d6,#7ceaa3 70%);color:#22c55e}
 .cr{--r1:#ef4444;--r2:#fca5a5;--ed:#b91c1c;background:radial-gradient(circle at 35% 30%,#fecaca,#f87171 70%);color:#dc2626;transform:rotateY(180deg)}`;document.head.appendChild(s)}
 el.innerHTML=`<div class="play"><div class="side"><label>Bet</label>${App.betHTML()}<button class="btn" id="go">Bet</button><p style="font-size:15px;line-height:1.5;color:#e2e8f0">Double your bet or lose it all?<br><br>Test your luck, a 50% chance to double, but a 50% chance to lose your Steakcoin bet!</p></div><div class="stage" style="display:flex;align-items:center;justify-content:center"><div class="coinw" id="cw"><div class="coin" id="cn"><div class="cface cg">X2</div><div class="cface cr">X</div></div></div></div></div>`;
-const q=s=>el.querySelector(s),go=q('#go'),cn=q('#cn'),cw=q('#cw'),stage=q('.stage');let rot=0,busy=false,tm;
-go.onclick=()=>{if(busy)return;const bet=App.bet(el,'DOUBLE OR NOTHING');if(!bet)return;busy=true;go.disabled=true;const win=Math.random()<.49;
+const q=s=>el.querySelector(s),go=q('#go'),cn=q('#cn'),cw=q('#cw'),stage=q('.stage');let rot=180,busy=false,tm;cn.style.transition='none';cn.style.transform='rotateY(180deg)';void cn.offsetWidth;cn.style.transition='';
+go.onclick=()=>{if(busy)return;const bet=App.bet(el,'DOUBLE OR NOTHING');if(!bet)return;busy=true;go.disabled=true;const win=Math.random()<DON_WIN;
 rot=Math.ceil(rot/360)*360+1800+(win?0:180);cw.classList.remove('hop');void cw.offsetWidth;cw.classList.add('hop');cn.style.transform=`rotateY(${rot}deg)`;
-tm=setTimeout(()=>{App.settle('DOUBLE OR NOTHING',bet,win?bet*2:0);if(win){FX.confetti(stage,50);App.toast(`X2! +$${App.f(bet)} profit`)}else App.toast(`X! Lost $${App.f(bet)}`);busy=false;go.disabled=false},1850)};
+tm=setTimeout(()=>{const pay=App.settle('DOUBLE OR NOTHING',bet,win?bet*2:0);if(win){FX.confetti(stage,50);App.toast(`X2! +$${App.f(pay-bet)} profit`)}else App.toast(`X! Lost $${App.f(bet)}`);busy=false;go.disabled=false},1850)};
 return()=>clearTimeout(tm)}};
