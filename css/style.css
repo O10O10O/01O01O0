@@ -104,7 +104,7 @@ canvas{max-width:100%;background:#0a1620;border-radius:10px}.stage>canvas{flex:1
 #hb-user{background:none;cursor:pointer;font-family:inherit}.pl.big{min-width:210px;padding:1px 14px;line-height:1.25}#hb-un{font-size:14px;font-weight:700}.tagline{font-size:12px}#hb-gems{display:flex;align-items:center;justify-content:center;gap:4px;min-width:80px}
 .gic{vertical-align:middle}.gmrow{display:flex;align-items:center;gap:6px;font-size:20px;color:#e9c9ff}.who{margin:8px 0;font-size:16px}.who .notag{font-size:12px}
 .dash2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}@media(max-width:900px){.dash2{grid-template-columns:1fr}}.qm{margin-bottom:6px}.qm small{font-size:12px;color:#d7e3ef}.rs{font-size:11px;color:#9db8d2}
-.c-guessthecup{background:#fff}
+.c-guessthecup{background:url(../img/guessthecup.png) center/cover,linear-gradient(#1e293b,#0f766e)}
 .lined{display:flex;align-items:center;gap:10px;font-weight:400;font-size:20px;color:#9db8d2;margin:6px 0 8px}.lined::after{content:"";flex:1;height:3px;background:var(--line);border-radius:2px}
 .gemchip{position:absolute;right:18px;top:14px;display:flex;align-items:center;gap:6px;background:linear-gradient(#f3d6ff,#d58cff);color:#3b0764;font-weight:900;border-radius:999px;padding:4px 14px;font-size:18px}main{position:relative}
 .sprev{display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:18px;min-height:46px;border:2px solid var(--line);border-radius:22px;background:var(--panel);padding:6px 10px;overflow-wrap:anywhere}
