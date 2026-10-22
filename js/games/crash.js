@@ -12,7 +12,8 @@ return[a*40+b*P1[0]+d*P2[0]+e*W*.84+Math.sin(p*6+seed*6)*5*p,a*(H-38)+b*P1[1]+d*
 let tip=[630,30],exp=0,ph='bet',t0=performance.now(),m=1,pt=1,placed=0,cashed=false,pts=[],hist=[],raf=0;
 const newPt=()=>Math.min(1000,Math.max(1,.99/(1-Math.random())));
 function btn(){go.textContent=ph==='bet'?(placed?'Bet placed':'Place bet'):ph==='run'&&placed&&!cashed?'Cash out':'Wait…';go.disabled=ph==='bet'?!!placed:!(ph==='run'&&placed&&!cashed)}
-function cash(){if(!placed||cashed||ph!=='run')return;cashed=true;App.settle('CRASH',placed,placed*m);App.toast(`Cashed out at ${m.toFixed(2)}x: +$${App.f(placed*m-placed)}`);btn()}
+/* v2.25 fix: a manual cash-out re-reads the real clock (a hidden/throttled tab could otherwise cash out at a stale, pre-crash multiplier); auto-cashout only fires BELOW the crash point. */
+function cash(auto){if(!placed||cashed||ph!=='run')return;if(!auto){const mm=Math.exp(.15*(performance.now()-t0)/1000);if(mm>=pt)return;m=mm}cashed=true;App.settle('CRASH',placed,placed*m);App.toast(`Cashed out at ${m.toFixed(2)}x: +$${App.f(placed*m-placed)}`);btn()}
 function draw(now){const dt=Math.min(.05,Math.max(0,(now-lastT)/1000));lastT=now;
 if(ph==='run'&&prevPh!=='run'){seed=rr();smoke=[];rot=-.3}prevPh=ph;
 const run=ph==='run',crashed=ph==='crash',idle=ph==='bet';
@@ -38,7 +39,7 @@ c.fillStyle='#ef4444';c.beginPath();c.moveTo(-8,-5);c.lineTo(-18,-15);c.lineTo(-
 c.fillStyle='#e2e8f0';c.beginPath();c.ellipse(0,0,18,7,0,0,7);c.fill();c.fillStyle='#ef4444';c.beginPath();c.moveTo(10,-6);c.quadraticCurveTo(27,0,10,6);c.fill();c.fillStyle='#38bdf8';c.beginPath();c.arc(1,0,3,0,7);c.fill();c.restore()}}
 function tick(now){const s=(now-t0)/1000;
 if(ph==='bet'){const cd=5-s;mu.textContent=`Next round in ${Math.max(0,cd).toFixed(1)}s`;mu.style.color='#e2e8f0';if(cd<=0){ph='run';t0=now;pt=newPt();pts=[];cashed=false;m=1;btn()}}
-else if(ph==='run'){m=Math.exp(.15*s);pts.push([s,m]);mu.textContent=m.toFixed(2)+'x';mu.style.color='#22c55e';const a=parseFloat(el.querySelector('#au').value);if(placed&&!cashed&&a>=1.01&&m>=a){m=a;cash()}
+else if(ph==='run'){m=Math.exp(.15*s);pts.push([s,m]);mu.textContent=m.toFixed(2)+'x';mu.style.color='#22c55e';const a=parseFloat(el.querySelector('#au').value);if(placed&&!cashed&&a>=1.01&&a<pt&&m>=a){m=a;cash(true)}
 if(m>=pt){m=pt;ph='crash';mu.textContent='Crashed @ '+pt.toFixed(2)+'x';mu.style.color='#ef4444';hist.unshift(pt.toFixed(2)+'x');hs.textContent=hist.slice(0,8).join('  ');exp=1;if(placed&&!cashed){App.settle('CRASH',placed,0)}t0=now;btn()}}
 else if(s>2.5){ph='bet';t0=now;placed=0;btn()}
 draw(now);if(exp){exp=0;const k=cv.clientWidth/640;FX.boom(cv.parentNode,cv.offsetLeft+tip[0]*k,cv.offsetTop+tip[1]*k,true)}raf=requestAnimationFrame(tick)}
