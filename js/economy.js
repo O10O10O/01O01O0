@@ -12,11 +12,11 @@ const v=Number(String(raw).trim());
 if(!Number.isFinite(v)||v<=0)return{ok:false,msg:'Enter a bet above 0'};
 if(Math.abs(v*100-Math.round(v*100))>1e-6)return{ok:false,msg:'Bets can have at most 2 decimal places'};
 const min=Econ.minBet(game);if(v<min-1e-9)return{ok:false,msg:`Minimum ${game[0]+game.slice(1).toLowerCase()} bet is ${min.toFixed(2)} Steakcoin`};
-if(v>balance+1e-9)return{ok:false,msg:'Not enough Steakcoin'};return{ok:true,v:Econ.r2(v)}},
+if(v>balance+1e-9)return{ok:false,msg:'Not enough 01O0coin'};return{ok:true,v:Econ.r2(v)}},
 startBalance:(rk=Store.d.rk)=>rk===0?CFG.UNRANKED_START:CFG.RANKS[rk].rw.c,   // used by every "reset balance" action
 bonusActive:(now=Date.now())=>now<Store.d.bx,
 effMult:(now)=>Econ.bonusActive(now)?CFG.DAILY.BONUS_MULT:1,                  // only the Daily Spin 2X bonus can multiply profit
-summary:()=>Econ.bonusActive()?`2X Steakcoin bonus active (profit x${CFG.DAILY.BONUS_MULT})`:'No active profit bonus',
+summary:()=>Econ.bonusActive()?`2X 01O0coin bonus active (profit x${CFG.DAILY.BONUS_MULT})`:'No active profit bonus',
 /* gross = total returned INCLUDING stake. Only positive net profit is multiplied (by the 2X bonus, if active). */
 payout(bet,gross,now){const net=Econ.r2(gross-bet);return net>0?Econ.r2(bet+net*Econ.effMult(now)):Econ.r2(gross)},
 settle(game,bet,gross){Store.check();const pay=Econ.payout(bet,gross),d=Store.d,net=Econ.r2(pay-bet);d.balance=Econ.r2(d.balance+pay);Store.sync();Stats.record(game,bet,pay);Rank.onRound(game,net);Store.save();return pay},
