@@ -15,10 +15,25 @@ RANKS:[
 {n:'Amethyst',g:['#d8b4fe','#6d28d9'],req:{c:75000,r:600},rw:{c:250,g:7}},
 {n:'Diamond', g:['#93c5fd','#1e3a8a'],req:{c:100000,r:750},rw:{c:500,g:8}},
 {n:'Ascended',g:['#ffffff','#7dd3fc'],req:{c:150000,r:1000},rw:{c:500,g:10}},
-{n:'Verifier',g:['#fde68a','#d97706'],req:null,           rw:{c:750,g:12}}],
-AUTOSPIN_RANK:3,                            // Silver (index in RANKS) unlocks Auto-Spin on Cases
-CONV:{PLINKO:20,FLIP:5,'DOUBLE OR NOTHING':5},   // raw rounds per 1 qualified mini-game round (others 1)
-MIN_BET:{PLINKO:0.1},DEFAULT_MIN:0.01,
+{n:'Verifier I',  g:['#fde68a','#d97706'],req:{c:155000,r:1000}, rw:{c:750,g:12}},
+// v2.25 Rank Expansion I. ic = badge icon: check | crown | feather | demon | xdemon (demon icons are img/insanedemon.png / img/extremedemon.png)
+{n:'Verifier II', g:['#fde68a','#d97706'],req:{c:175000,r:1000}, rw:{c:750,g:12},ic:'check'},
+{n:'Verifier III',g:['#fde68a','#d97706'],req:{c:200000,r:1000}, rw:{c:750,g:12},ic:'check'},
+{n:'Champion I',  g:['#9f1d2e','#f5b08a'],req:{c:215000,r:1250}, rw:{c:1250,g:14},ic:'crown'},
+{n:'Champion II', g:['#9f1d2e','#f5b08a'],req:{c:230000,r:1250}, rw:{c:1250,g:14},ic:'crown'},
+{n:'Champion III',g:['#9f1d2e','#f5b08a'],req:{c:300000,r:1500}, rw:{c:1250,g:14},ic:'crown'},
+{n:'Radiant I',   g:['#ffd84d','#d9c9a3'],req:{c:330000,r:1500}, rw:{c:1500,g:16},ic:'feather'},
+{n:'Radiant II',  g:['#ffd84d','#d9c9a3'],req:{c:400000,r:1500}, rw:{c:1500,g:16},ic:'feather'},
+{n:'Radiant III', g:['#ffd84d','#d9c9a3'],req:{c:420000,r:1750}, rw:{c:1500,g:16},ic:'feather'},
+{n:'Insane Demon I', g:['#ff7a45','#c2221a'],req:{c:500000,r:2000}, rw:{c:1750,g:18},ic:'demon'},
+{n:'Insane Demon II',g:['#ff7a45','#c2221a'],req:{c:530000,r:2000}, rw:{c:1750,g:18},ic:'demon'},
+{n:'Extreme Demon',  g:['#ff3b2e','#d11a12'],req:null,             rw:{c:2000,g:20},ic:'xdemon'}],
+// Cases animation speed by rank index (Silver=3, Amethyst=7, Radiant I=16). Highest matching tier wins. Animation only: never payouts or odds.
+SPIN_SPEED:[[16,2.5],[7,2],[3,1.5]],
+CONV:{PLINKO:1000,CASES:3,FLIP:5,'DOUBLE OR NOTHING':5},   // raw rounds per 1 qualified mini-game round (others 1)
+GAP_MS:{PLINKO:400},                        // minimum delay between wagers (enforced in Econ.cool, shared across tabs)
+LOCK_TTL_MS:15000,                          // a cross-tab bet lock with no heartbeat for this long is stale and can be taken over
+MIN_BET:{PLINKO:1},DEFAULT_MIN:0.01,
 // Rarity: gems = normal price, deal = special-deal price, w = shop appearance weight (configurable; favours Common/Rare).
 RAR:{common:{n:'Common',gems:1,deal:1,w:50,color:'#f1f5f9'},rare:{n:'Rare',gems:2,deal:1,w:30,color:'#4f7cff'},epic:{n:'Epic',gems:3,deal:2,w:15,color:'#d066e8'},legendary:{n:'Legendary',gems:5,deal:3,w:5,color:'#ffd84d'}},
 SHOP:{ROTATION_MS:12*3600*1000,GRADS:4,TAGS:3,DEALS:4},   // 3 featured + 4 special deals = 7 offers

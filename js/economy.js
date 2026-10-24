@@ -6,6 +6,9 @@ r2:x=>Math.round(x*100)/100,
 fmt:n=>(+n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),
 fi:n=>Econ.fmt(n).replace(/\.00$/,''),
 rnd(){try{return crypto.getRandomValues(new Uint32Array(1))[0]/4294967296}catch(e){return Math.random()}},
+/* v2.25 anti-farming: minimum delay between wagers (shared by every tab via localStorage). Returns ms left to wait, or 0 and stamps the wager. */
+cool(game,now=Date.now()){const gap=CFG.GAP_MS[game];if(!gap)return 0;const k='steak_gap_'+game;let last=0;try{last=+localStorage.getItem(k)||0}catch(e){}
+if(last>now)last=0;const left=last+gap-now;if(left>0)return left;try{localStorage.setItem(k,String(now))}catch(e){}return 0},
 minBet:g=>CFG.MIN_BET[g]||CFG.DEFAULT_MIN,
 checkBet(raw,game,balance){Store.check();if(Store.armed&&Store.d)balance=Math.min(balance,Store.d.balance);   // never trust a caller-supplied balance
 const v=Number(String(raw).trim());
@@ -23,6 +26,15 @@ settle(game,bet,gross){Store.check();const pay=Econ.payout(bet,gross),d=Store.d,
 /* Wallet credit that is NOT game profit: no stats, no rank money, no quest progress (cosmetic sales, Gem conversion, resets). */
 addCoins(n){Store.check();Store.d.balance=Econ.r2(Store.d.balance+n);Store.sync();Store.save()},
 resetBalance(){Store.check();Store.d.balance=Econ.startBalance();Store.sync();Store.save()}};
+/* v2.25 cross-tab bet lock: the first tab to start a bet on a game owns it until it releases (resolved/cancelled). Stored in localStorage (the shared state);
+   the owner refreshes t via beat(), so a lock whose owner crashed/closed goes stale after CFG.LOCK_TTL_MS and no longer blocks play. */
+const Lock={id:Math.random().toString(36).slice(2)+Date.now().toString(36),key:g=>'steak_lock_'+g,
+read(g){try{const o=JSON.parse(localStorage.getItem(Lock.key(g)));return o&&typeof o.id==='string'&&Number.isFinite(o.t)?o:null}catch(e){return null}},
+mine(g){const o=Lock.read(g);return !!o&&o.id===Lock.id},
+heldByOther(g,now=Date.now()){const o=Lock.read(g);return !!o&&o.id!==Lock.id&&Math.abs(now-o.t)<CFG.LOCK_TTL_MS},
+acquire(g,now=Date.now()){if(Lock.heldByOther(g,now))return false;try{localStorage.setItem(Lock.key(g),JSON.stringify({id:Lock.id,t:now}))}catch(e){return true}return Lock.mine(g)},
+beat(g,now=Date.now()){if(!Lock.mine(g))return false;try{localStorage.setItem(Lock.key(g),JSON.stringify({id:Lock.id,t:now}))}catch(e){}return true},
+release(g){if(Lock.mine(g))try{localStorage.removeItem(Lock.key(g))}catch(e){}}};
 const Rank={
 status(){const d=Store.d,cur=CFG.RANKS[d.rk],next=CFG.RANKS[d.rk+1]||null,req=cur.req,coin=Math.max(0,Econ.r2(d.rc)),rounds=d.rq;
 return{idx:d.rk,cur,next,req,coin,rounds,max:!req,ready:!!req&&coin>=req.c&&rounds>=req.r}},
