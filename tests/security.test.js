@@ -40,7 +40,7 @@ t('dark palettes are lightened so particles stay visible',(()=>{const m=Cos.html
 t('username still escapes through Cos.user',Cos.user('<b>',null).includes('<b>')&&Cos.user('&lt;b&gt;','g_gem').includes('&lt;b&gt;'));
 // ---- Cases
 const C=Games.cases,R=CFG.RANKS;
-t('auto-spin speed: locked below Silver, Silver 1.5x, Amethyst 2x, Verifier 2.25x',[0,2,3,6,7,9,10].map(C.autoSpeed).join()==='1,1,1.5,1.5,2,2,2.25'&&R[3].n==='Silver'&&R[7].n==='Amethyst'&&R[10].n==='Verifier');
+t('spin speed: Silver 1.5x, Amethyst..Verifier I 2x, Radiant I..Extreme Demon 2.5x, else 1x',[0,2,3,6,7,9,10,12,15,16,19,21].map(C.spinSpeed).join()==='1,1,1.5,1.5,2,2,2,2,2,2.5,2.5,2.5'&&R[3].n==='Silver'&&R[7].n==='Amethyst'&&R[10].n==='Verifier I'&&R[16].n==='Radiant I');
 const mk=(k,fx)=>({r:{k,fx},m:1}),arr=Array.from({length:60},()=>mk('Common'));
 t('no tease with plain neighbours',C.teaseIdx(arr,48,mk('Common'))===-1);
 arr[47]=mk('Legendary','#fbbf24');t('tease when Legendary is right before a Common/Uncommon result',C.teaseIdx(arr,48,mk('Common'))===47&&C.teaseIdx(arr,48,mk('Uncommon'))===47);

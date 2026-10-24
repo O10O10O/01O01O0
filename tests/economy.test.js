@@ -1,6 +1,6 @@
 // Logic tests. Run: node tests/economy.test.js   (no browser needed)
 const fs=require('fs'),vm=require('vm'),path=require('path');
-const store={};global.localStorage={getItem:k=>store[k]??null,setItem:(k,v)=>store[k]=String(v)};global.window=global;global.Games={};global.addEventListener=()=>{};
+const store={};global.localStorage={getItem:k=>store[k]??null,setItem:(k,v)=>store[k]=String(v),removeItem:k=>{delete store[k]}};global.window=global;global.Games={};global.addEventListener=()=>{};
 const toasts=[];global.App={toast:m=>toasts.push(m),bal(){}};
 for(const f of ['config','cosmetics','storage','stats','economy'])vm.runInThisContext(fs.readFileSync(path.join(__dirname,'../js/'+f+'.js'),'utf8'),{filename:f});
 vm.runInThisContext(fs.readFileSync(path.join(__dirname,'../js/games/guessthecup.js'),'utf8'));
@@ -9,7 +9,9 @@ let pass=0,fail=0;const t=(n,ok,x='')=>{ok?pass++:fail++;console.log((ok?'PASS '
 const fresh=()=>{Store.d=Store.def();Store.d.user='t';toasts.length=0};const R=CFG.RANKS;
 // ---- ranks
 const reqs=[[2500,50],[5000,60],[7500,90],[10000,100],[15000,200],[20000,300],[50000,400],[75000,600],[100000,750],[150000,1000]],rw=[[50,1],[100,2],[250,3],[250,4],[250,5],[250,6],[250,7],[500,8],[500,10],[750,12]];
-t('rank order Unranked..Verifier',R.map(r=>r.n).join()==='Unranked,Copper,Bronze,Silver,Iron,Ruby,Emerald,Amethyst,Diamond,Ascended,Verifier'&&R[10].req===null);
+t('rank order Unranked..Extreme Demon',R.map(r=>r.n).join()==='Unranked,Copper,Bronze,Silver,Iron,Ruby,Emerald,Amethyst,Diamond,Ascended,Verifier I,Verifier II,Verifier III,Champion I,Champion II,Champion III,Radiant I,Radiant II,Radiant III,Insane Demon I,Insane Demon II,Extreme Demon'&&R[21].req===null&&R.slice(0,21).every(r=>r.req));
+const exp=[[155000,1000],[175000,1000],[200000,1000],[215000,1250],[230000,1250],[300000,1500],[330000,1500],[400000,1500],[420000,1750],[500000,2000],[530000,2000]],exr=[[750,12],[750,12],[750,12],[1250,14],[1250,14],[1250,14],[1500,16],[1500,16],[1500,16],[1750,18],[1750,18],[2000,20]];
+t('expansion requirements + rewards match the reference',exp.every(([c,r],i)=>R[10+i].req.c===c&&R[10+i].req.r===r)&&exr.every(([c,g],i)=>R[10+i].rw.c===c&&R[10+i].rw.g===g));
 t('rank-up requirements match the table',reqs.every(([c,r],i)=>R[i].req.c===c&&R[i].req.r===r));
 t('rank-up rewards (starting Steakcoin + Gems) match the table',rw.every(([c,g],i)=>R[i+1].rw.c===c&&R[i+1].rw.g===g));
 t('no rank multiplier fields remain in config',R.every(r=>!('m' in r)));
@@ -20,8 +22,8 @@ t('payout identical at every rank (no rank multiplier)',(()=>{for(let r=0;r<=10;
 fresh();Store.d.bx=Date.now()+60000;t('2X bonus doubles PROFIT only (bet 100, gross 150 -> 200)',Econ.payout(100,150)===200&&Econ.payout(100,0)===0&&Econ.payout(100,60)===60);
 t('2X bonus no longer described as stacking with a rank multiplier',!/rank/i.test(Econ.summary()));
 // ---- mini-game conversion + rank money
-fresh();for(let i=0;i<19;i++)Econ.settle('PLINKO',1,1);t('19 Plinko balls = 0 rounds',Store.d.rq===0);Econ.settle('PLINKO',1,1);t('20 Plinko balls = 1 round',Store.d.rq===1);
-fresh();for(let i=0;i<5;i++){Econ.settle('FLIP',1,1);Econ.settle('DOUBLE OR NOTHING',1,1)}t('5 Flip + 5 DoN = 2 rounds',Store.d.rq===2);fresh();Econ.settle('MINES',1,1);Econ.settle('CASES',1,1);t('other games 1:1',Store.d.rq===2);
+fresh();for(let i=0;i<999;i++)Econ.settle('PLINKO',1,1);t('999 Plinko balls = 0 rounds',Store.d.rq===0);Econ.settle('PLINKO',1,1);t('1000 Plinko balls = 1 round',Store.d.rq===1);
+fresh();for(let i=0;i<5;i++){Econ.settle('FLIP',1,1);Econ.settle('DOUBLE OR NOTHING',1,1)}t('5 Flip + 5 DoN = 2 rounds',Store.d.rq===2);fresh();Econ.settle('MINES',1,1);Econ.settle('CASES',1,1);t('other games 1:1 (Cases is 3:1)',Store.d.rq===1);fresh();for(let i=0;i<3;i++)Econ.settle('CASES',1,1);t('3 Cases games = 1 round',Store.d.rq===1);
 fresh();Econ.settle('MINES',100,150);t('rank money = net profit (50)',Store.d.rc===50);Econ.settle('MINES',100,0);t('losses do not reduce earned rank money',Store.d.rc===50);
 // ---- Daily Spin counts toward rank money (regression)
 fresh();Store.d.dr={id:'low',amount:400};Store.d.dc=false;Store.d.dl=1;const bal=Store.d.balance;Daily.credit();Daily.credit();
@@ -37,7 +39,7 @@ fresh();Store.d.rk=0;Store.d.rc=2500;Store.d.rq=50;Store.d.balance=9999;Store.d.
 t('rank-up: Copper, balance=$50, +1 Gem, once only',r1&&!r2&&Store.d.rk===1&&Store.d.balance===50&&Store.d.gems===6);t('rank-up keeps lifetime stats + cosmetics, clears rank progress',Store.d.lq===40&&Store.d.inv.length===1&&Store.d.rc===0&&Store.d.rq===0);
 let allr=true;for(let i=0;i<10;i++){fresh();Store.d.rk=i;Store.d.rc=R[i].req.c;Store.d.rq=R[i].req.r;Store.d.gems=0;const o=Rank.rankUp();if(!o||Store.d.balance!==R[i+1].rw.c||Store.d.gems!==R[i+1].rw.g)allr=false}t('every rank-up grants its exact cash + gems',allr);
 fresh();Store.d.rc=2499.99;Store.d.rq=50;t('not eligible at $2,499.99',!Rank.status().ready);Store.d.rc=2500;Store.d.rq=49;t('not eligible at 49 rounds',!Rank.status().ready);
-fresh();Store.d.rk=10;Store.d.rc=1e9;Store.d.rq=1e9;t('Verifier cannot rank up',Rank.rankUp()===null);
+fresh();Store.d.rk=21;Store.d.rc=1e9;Store.d.rq=1e9;t('Extreme Demon cannot rank up',Rank.rankUp()===null);
 fresh();Store.d.rk=3;Econ.resetBalance();t('Reset Balance uses the rank starting cash (Silver $250)',Store.d.balance===250&&Store.d.gems===0);fresh();Econ.resetBalance();t('Reset Balance Unranked = configurable default, no gems',Store.d.balance===CFG.UNRANKED_START&&Store.d.gems===0);
 fresh();Store.d.rk=2;Store.d.balance=5;Econ.resetBalance();t('reset does not change rank/progress or count as earnings',Store.d.rk===2&&Store.d.rc===0);
 // ---- gems conversion
@@ -81,12 +83,15 @@ fresh();Store.d.balance-=10;const cp=Econ.settle('GUESS THE CUP',10,10*CUP_WIN_M
 t('shuffle is much faster: 3.5-5 s window, 80-130 ms swaps',CUP_SHUFFLE_MS[0]===3500&&CUP_SHUFFLE_MS[1]===5000&&CUP_SWAP_MS[0]===80&&CUP_SWAP_MS[1]===130);
 // ---- Update 2.0
 t('Daily Spin Steakcoin range is 250-750',CFG.DAILY.REWARDS[0].min===250&&CFG.DAILY.REWARDS[0].max===750);
-t('Auto-Spin unlocks at Silver',R[CFG.AUTOSPIN_RANK].n==='Silver');
+t('Auto-Spin is gone from config',CFG.AUTOSPIN_RANK===undefined);
 t('D1 gradient/tag no longer use the Gilded gold palette',Cos.by('g_d1').bg!==Cos.by('g_gilded').bg&&!/#c99700|#b8860b|#ffe08a|#fff07a/i.test(Cos.by('g_d1').bg)&&Cos.by('t_div1').bg===Cos.by('g_d1').bg);
 fresh();t('lifetime Legendary/Mythic/Secret counters default to 0 and persist',Object.values(Store.d.cc).every(v=>v===0));Store.d.cc.Mythic=3;Store.save();realLoad();t('case counters survive reload',Store.d.cc.Mythic===3&&Store.d.cc.Secret===0);
 t('playtime accumulates once per second, capped, and ignores a second tab inside the same second',(()=>{localStorage.setItem(Store.tpKey,JSON.stringify({t:0,l:1000}));const a=Store.tickPlaytime(2000);const b=Store.tickPlaytime(2300);const c=Store.tickPlaytime(10000);return a===1000&&b===1000&&c===3500})());
 // ---- bet validation + persistence
-const cb=(v,g='PLINKO')=>Econ.checkBet(v,g,1000);t('Plinko min bet 0.1 (rejects .001/.01/.099)',!cb('0.001').ok&&!cb('0.01').ok&&!cb('0.099').ok&&cb('0.1').ok);
+const cb=(v,g='PLINKO')=>Econ.checkBet(v,g,1000);t('Plinko min bet $1 (rejects 0.1/0.99)',!cb('0.1').ok&&!cb('0.99').ok&&cb('1').ok);
+// v2.25 Plinko drop delay + cross-tab bet lock
+const t0=1e12;t('Plinko drops need a delay',Econ.cool('PLINKO',t0)===0&&Econ.cool('PLINKO',t0+100)>0&&Econ.cool('PLINKO',t0+CFG.GAP_MS.PLINKO)===0&&Econ.cool('MINES',t0)===0);
+t('bet lock: first tab owns it, others blocked, owner can re-beat, release frees it',(()=>{localStorage.removeItem('steak_lock_CASES');const me=Lock.id;if(!Lock.acquire('CASES',t0))return false;localStorage.setItem('steak_lock_CASES',JSON.stringify({id:'other',t:t0}));const blocked=!Lock.acquire('CASES',t0+1000)&&Lock.heldByOther('CASES',t0+1000);const stale=!Lock.heldByOther('CASES',t0+CFG.LOCK_TTL_MS+1);const take=Lock.acquire('CASES',t0+CFG.LOCK_TTL_MS+1)&&Lock.mine('CASES')&&Lock.beat('CASES',t0+CFG.LOCK_TTL_MS+2);Lock.release('CASES');return blocked&&stale&&take&&!Lock.read('CASES')&&me===Lock.id})());
 fresh();Store.d.gems=7;Store.d.inv=['t_larper','g_flame'];Store.d.eq={tag:'t_larper',grad:'g_flame'};Store.d.q.d.p.rounds=12;Store.save();realLoad();t('gems, inventory, equipment, quest progress persist through reload',Store.d.gems===7&&Store.d.inv.length===2&&Store.d.eq.tag==='t_larper'&&Store.d.q.d.p.rounds===12);
 localStorage.setItem(Store.key,JSON.stringify({gems:-5,inv:['nope','t_larper'],eq:{tag:'g_gem'},balance:'x'}));realLoad();t('corrupt storage is sanitised (no negative gems, unknown/unowned cosmetics dropped)',Store.d.gems===0&&Store.d.inv.join()==='t_larper'&&Store.d.eq.tag===null&&Number.isFinite(Store.d.balance));
 console.log(`\n${pass} passed, ${fail} failed`);process.exit(fail?1:0);
