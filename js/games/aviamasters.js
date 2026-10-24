@@ -1,5 +1,5 @@
 (()=>{const N=8,DS=110,START=49,DRIFT=3,RDROP=8,BOOST=3,FUEL=5,PR=.5,M0=1,D=(N+1)*DS;
-const V=[['+',1,32],['+',2,5],['+',5,.8],['+',10,.15],['×',2,2.5],['×',3,1],['×',4,.3],['f',0,48]],TOT=V.reduce((a,b)=>a+b[2],0);
+const V=[['+',1,35],['+',2,6],['+',5,.8],['+',10,.15],['×',2,2.5],['×',3,1],['×',4,.3],['f',0,42]],TOT=V.reduce((a,b)=>a+b[2],0);
 const pick=()=>{let r=Math.random()*TOT;for(const v of V)if((r-=v[2])<0)return v;return V[0]};
 function plan(){let alt=START,m=M0,pts=[[0,2],[45,START]],ev=[];
 for(let i=1;i<=N;i++){const d=i*DS,ab=alt-DRIFT;
